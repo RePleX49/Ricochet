@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Ricochet/Public/RProjectile.h"
 #include "RicochetCharacter.generated.h"
 
 class UInputComponent;
@@ -66,7 +67,7 @@ public:
 
 	/** Projectile class to spawn */
 	UPROPERTY(EditDefaultsOnly, Category=Projectile)
-	TSubclassOf<class ARicochetProjectile> ProjectileClass;
+	TSubclassOf<class ARProjectile> ProjectileClass;
 
 	/** Sound to play each time we fire */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
