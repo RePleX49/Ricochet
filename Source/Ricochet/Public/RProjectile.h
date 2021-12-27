@@ -25,14 +25,31 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Colliders")
 	class USphereComponent* SphereCollider;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Particles")
+	class UParticleSystem* ExplosionFX;
+
 	UFUNCTION()
 	void OnCompHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	UPROPERTY(EditDefaultsOnly, Category = "Properties")
-	int DamageStages = 5;
+	int DamageStages;
 
-	int CurrentDamageStage = 0;
-	float SpeedRange = 0.0f;
+	int CurrentDamageStage;
+	float SpeedRange;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Explosion Properties")
+	float ExplosionDamage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Explosion Properties")
+	float ExplosionInnerRadius;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Explosion Properties")
+	float ExplosionOuterRadius;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Explosion Properties")
+	float ExplosionDamageFalloff;
+
+	TSubclassOf<UDamageType> ExplosionDamageType;
 
 public:	
 	// Called every frame

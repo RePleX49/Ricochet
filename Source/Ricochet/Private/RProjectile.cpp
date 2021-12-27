@@ -3,6 +3,7 @@
 
 #include "RProjectile.h"
 #include "Components/SphereComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Gameframework/ProjectileMovementComponent.h"
 
 // Sets default values
@@ -23,6 +24,14 @@ ARProjectile::ARProjectile()
 	ProjectileMovement->bShouldBounce = true;
 	ProjectileMovement->bRotationFollowsVelocity = true;
 	ProjectileMovement->ProjectileGravityScale = 0.0f;
+
+	DamageStages = 5;
+	CurrentDamageStage = 0;
+
+	ExplosionDamage = 35.0f;
+	ExplosionInnerRadius = 50.0f;
+	ExplosionOuterRadius = 100.0f;
+	ExplosionDamageFalloff = 2.0f;
 }
 
 // Called when the game starts or when spawned
@@ -35,8 +44,19 @@ void ARProjectile::BeginPlay()
 
 void ARProjectile::OnCompHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (CurrentDamageStage >= DamageStages)
+	UE_LOG(LogTemp, Warning, TEXT("Hit"));
+	if (CurrentDamageStage >= DamageStages - 1)
 	{
+		if (ExplosionFX)
+		{
+			
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionFX, this->GetActorTransform());			
+		}
+
+		TArray<AActor*> IgnoredActors;
+		UGameplayStatics::ApplyRadialDamageWithFalloff(this, ExplosionDamage, ExplosionDamage / 2, this->GetActorLocation(),
+			ExplosionInnerRadius, ExplosionOuterRadius, ExplosionDamageFalloff, ExplosionDamageType, IgnoredActors, nullptr, nullptr);
+
 		Destroy();
 		return;
 	}
