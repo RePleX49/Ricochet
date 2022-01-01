@@ -11,6 +11,7 @@
 #include "HeadMountedDisplayFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "MotionControllerComponent.h"
+#include "Net/UnrealNetwork.h"
 #include "XRMotionControllerBase.h" // for FXRMotionControllerBase::RightHandSourceId
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
@@ -141,6 +142,11 @@ void ARicochetCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 
 void ARicochetCharacter::OnFire()
 {
+	if (!HasAuthority())
+	{
+		ServerOnFire();
+	}
+
 	// try and fire a projectile
 	if (ProjectileClass != NULL)
 	{
@@ -189,6 +195,17 @@ void ARicochetCharacter::OnFire()
 			AnimInstance->Montage_Play(FireAnimation, 1.f);
 		}
 	}
+}
+
+void ARicochetCharacter::ServerOnFire_Implementation()
+{
+	OnFire();
+}
+
+bool ARicochetCharacter::ServerOnFire_Validate()
+{
+	// Validate input call here
+	return true;
 }
 
 void ARicochetCharacter::OnResetVR()
