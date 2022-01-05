@@ -30,6 +30,9 @@ class ARicochetCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FirstPersonCameraComponent;
 
+	UPROPERTY(VisibleAnywhere, Category = "Component")
+	class URHealthComponent* HealthComponent;
+
 public:
 	ARicochetCharacter();
 

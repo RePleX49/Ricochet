@@ -3,6 +3,7 @@
 #include "RicochetCharacter.h"
 #include "RicochetProjectile.h"
 #include "Ricochet/Public/RProjectile.h"
+#include "Ricochet/Public/RHealthComponent.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -57,6 +58,9 @@ ARicochetCharacter::ARicochetCharacter()
 
 	// Default offset from the character location for projectiles to spawn
 	GunOffset = FVector(100.0f, 0.0f, 10.0f);
+
+	// Create HealthComponent
+	HealthComponent = CreateDefaultSubobject<URHealthComponent>(TEXT("HealthComponent"));
 }
 
 void ARicochetCharacter::BeginPlay()
