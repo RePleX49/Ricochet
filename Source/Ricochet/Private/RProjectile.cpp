@@ -3,6 +3,7 @@
 
 #include "RProjectile.h"
 #include "Components/SphereComponent.h"
+#include "Engine/Public/DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "Gameframework/ProjectileMovementComponent.h"
 
@@ -28,7 +29,8 @@ ARProjectile::ARProjectile()
 	DamageStages = 5;
 	CurrentDamageStage = 0;
 
-	ExplosionDamage = 35.0f;
+	BaseHitDamage = 20.0f;
+	ExplosionDamage = 40.0f;
 	ExplosionInnerRadius = 50.0f;
 	ExplosionOuterRadius = 100.0f;
 	ExplosionDamageFalloff = 2.0f;
@@ -44,7 +46,13 @@ void ARProjectile::BeginPlay()
 
 void ARProjectile::OnCompHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Hit"));
+	UE_LOG(LogTemp, Warning, TEXT("Hit %s"), *OtherActor->GetName());
+
+	if (OtherActor)
+	{
+		UGameplayStatics::ApplyDamage(OtherActor, BaseHitDamage * DamageStages, nullptr, nullptr, ExplosionDamageType);
+	}
+
 	if (CurrentDamageStage >= DamageStages - 1)
 	{
 		if (ExplosionFX)
@@ -54,8 +62,10 @@ void ARProjectile::OnCompHit(UPrimitiveComponent* HitComp, AActor* OtherActor, U
 		}
 
 		TArray<AActor*> IgnoredActors;
-		UGameplayStatics::ApplyRadialDamageWithFalloff(this, ExplosionDamage, ExplosionDamage / 2, this->GetActorLocation(),
-			ExplosionInnerRadius, ExplosionOuterRadius, ExplosionDamageFalloff, ExplosionDamageType, IgnoredActors, nullptr, nullptr);
+		UGameplayStatics::ApplyRadialDamage(this, ExplosionDamage, GetActorLocation(),
+			ExplosionOuterRadius, ExplosionDamageType, IgnoredActors, nullptr, nullptr, true);
+
+		DrawDebugSphere(GetWorld(), GetActorLocation(), ExplosionOuterRadius, 8, FColor::Red, false, 3.0f, 0, 1.0f);
 
 		Destroy();
 		return;

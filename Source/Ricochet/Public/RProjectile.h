@@ -37,6 +37,9 @@ protected:
 	int CurrentDamageStage;
 	float SpeedRange;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	float BaseHitDamage;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Explosion Properties")
 	float ExplosionDamage;
 

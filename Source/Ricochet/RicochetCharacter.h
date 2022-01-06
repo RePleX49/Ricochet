@@ -14,32 +14,9 @@ class ARicochetCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
-	/** Pawn mesh: 1st person view (arms; seen only by self) */
-	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
-	class USkeletalMeshComponent* Mesh1P;
-
-	/** Gun mesh: 1st person view (seen only by self) */
-	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
-	class USkeletalMeshComponent* FP_Gun;
-
-	/** Location on gun mesh where projectiles should spawn. */
-	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
-	class USceneComponent* FP_MuzzleLocation;
-
-	/** First person camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* FirstPersonCameraComponent;
-
-	UPROPERTY(VisibleAnywhere, Category = "Component")
-	class URHealthComponent* HealthComponent;
-
 public:
 	ARicochetCharacter();
 
-protected:
-	virtual void BeginPlay();
-
-public:
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseTurnRate;
@@ -65,6 +42,12 @@ public:
 	class UAnimMontage* FireAnimation;
 
 protected:
+
+
+
+	virtual void BeginPlay();
+
+
 	
 	/** Fires a projectile. */
 	void OnFire();
@@ -90,10 +73,34 @@ protected:
 	 */
 	void LookUpAtRate(float Rate);
 	
-protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 	// End of APawn interface
+
+	/** Pawn mesh: 1st person view (arms; seen only by self) */
+	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
+		class USkeletalMeshComponent* Mesh1P;
+
+	/** Gun mesh: 1st person view (seen only by self) */
+	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
+		class USkeletalMeshComponent* FP_Gun;
+
+	/** Location on gun mesh where projectiles should spawn. */
+	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
+		class USceneComponent* FP_MuzzleLocation;
+
+	/** First person camera */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+		class UCameraComponent* FirstPersonCameraComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = "Component")
+		class URHealthComponent* HealthComponent;
+
+	UFUNCTION()
+		void OnHealthChanged(URHealthComponent* OwningHealthComponent, float Health, float Damage, const class UDamageType* DamageType,
+			class AController* InstigatedBy, AActor* DamageCauser);
+
+	bool bIsDead;
 
 public:
 	/** Returns Mesh1P subobject **/

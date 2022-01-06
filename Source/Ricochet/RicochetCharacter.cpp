@@ -9,6 +9,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/InputSettings.h"
+#include "GameFramework/PawnMovementComponent.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "MotionControllerComponent.h"
@@ -61,6 +62,8 @@ ARicochetCharacter::ARicochetCharacter()
 
 	// Create HealthComponent
 	HealthComponent = CreateDefaultSubobject<URHealthComponent>(TEXT("HealthComponent"));
+
+	bIsDead = false;
 }
 
 void ARicochetCharacter::BeginPlay()
@@ -70,6 +73,24 @@ void ARicochetCharacter::BeginPlay()
 
 	//Attach gun mesh component to Skeleton, doing it here because the skeleton is not yet created in the constructor
 	FP_Gun->AttachToComponent(Mesh1P, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
+	HealthComponent->OnHealthChanged.AddDynamic(this, &ARicochetCharacter::OnHealthChanged);
+}
+
+void ARicochetCharacter::OnHealthChanged(URHealthComponent* OwningHealthComponent, float Health, float Damage, const class UDamageType* DamageType, 
+	class AController* InstigatedBy, AActor* DamageCauser)
+{
+	if (Health <= 0.0f && !bIsDead)
+	{
+		bIsDead = true;
+
+		// TODO kill and respawn player
+		GetMovementComponent()->StopMovementImmediately();
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		DetachFromControllerPendingDestroy();
+
+		// destroy character after 5 seconds
+		SetLifeSpan(5.0f);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
