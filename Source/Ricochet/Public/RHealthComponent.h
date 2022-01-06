@@ -26,13 +26,13 @@ protected:
 	void HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType,
 		class AController* InstigatedBy, AActor* DamageCauser);
 
-	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_Health, Category = "Properties")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, ReplicatedUsing = OnRep_Health, Category = "Properties")
 	float Health;
 
 	UFUNCTION()
 	void OnRep_Health(float OldHealth);
 
-	UPROPERTY(EditDefaultsOnly, Category = "Properties")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly,Category = "Properties")
 	float MaxHealth;
 
 	bool bIsDead;

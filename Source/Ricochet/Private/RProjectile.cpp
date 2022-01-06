@@ -50,7 +50,7 @@ void ARProjectile::OnCompHit(UPrimitiveComponent* HitComp, AActor* OtherActor, U
 
 	if (OtherActor)
 	{
-		UGameplayStatics::ApplyDamage(OtherActor, BaseHitDamage * DamageStages, nullptr, nullptr, ExplosionDamageType);
+		UGameplayStatics::ApplyDamage(OtherActor, BaseHitDamage * CurrentDamageStage, nullptr, nullptr, ExplosionDamageType);
 	}
 
 	if (CurrentDamageStage >= DamageStages - 1)

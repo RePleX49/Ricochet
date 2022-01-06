@@ -43,11 +43,7 @@ public:
 
 protected:
 
-
-
 	virtual void BeginPlay();
-
-
 	
 	/** Fires a projectile. */
 	void OnFire();
@@ -93,12 +89,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class UCameraComponent* FirstPersonCameraComponent;
 
-	UPROPERTY(VisibleAnywhere, Category = "Component")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 		class URHealthComponent* HealthComponent;
 
 	UFUNCTION()
-		void OnHealthChanged(URHealthComponent* OwningHealthComponent, float Health, float Damage, const class UDamageType* DamageType,
-			class AController* InstigatedBy, AActor* DamageCauser);
+	void OnHealthChanged(URHealthComponent* OwningHealthComponent, float Health, float Damage, const class UDamageType* DamageType,
+		class AController* InstigatedBy, AActor* DamageCauser);
 
 	bool bIsDead;
 
