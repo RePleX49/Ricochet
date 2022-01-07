@@ -12,6 +12,7 @@ ARProjectile::ARProjectile()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	
 	SphereCollider = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
 	SphereCollider->OnComponentHit.AddDynamic(this, &ARProjectile::OnCompHit);
 	SphereCollider->SetSphereRadius(5.0f);
@@ -25,6 +26,9 @@ ARProjectile::ARProjectile()
 	ProjectileMovement->bShouldBounce = true;
 	ProjectileMovement->bRotationFollowsVelocity = true;
 	ProjectileMovement->ProjectileGravityScale = 0.0f;
+
+	SetReplicates(true);
+	SetReplicatingMovement(true);
 
 	DamageStages = 5;
 	CurrentDamageStage = 0;

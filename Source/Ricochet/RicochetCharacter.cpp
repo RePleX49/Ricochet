@@ -128,8 +128,8 @@ void ARicochetCharacter::OnFire()
 		ServerOnFire();
 	}
 
-	// try and fire a projectile
-	if (ProjectileClass != NULL)
+	// Only fire projectile if Server
+	if (ProjectileClass != NULL && HasAuthority())
 	{
 		UWorld* const World = GetWorld();
 		if (World != NULL)
@@ -145,10 +145,6 @@ void ARicochetCharacter::OnFire()
 				// spawn the projectile at the muzzle
 				World->SpawnActor<ARProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
 		}
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Projectile is NULL"));
 	}
 
 	// try and play the sound if specified
