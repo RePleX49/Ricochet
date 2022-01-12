@@ -13,5 +13,17 @@ UCLASS()
 class RICOCHET_API ARPlayerController : public APlayerController
 {
 	GENERATED_BODY()
+
+public:
+
+	void StartRespawnTimer();
+
+protected:
+
+	UFUNCTION(Server, WithValidation, Reliable)
+	void ServerRequestRespawn();
+
+	UPROPERTY(BlueprintReadOnly)
+	FTimerHandle TimerHandle_Respawn;
 	
 };

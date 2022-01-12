@@ -23,6 +23,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void PlayerUnready();
 
+	void RespawnPlayer(APlayerController* PC);
+
 protected:
 	int PlayersReady;
 

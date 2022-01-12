@@ -38,6 +38,15 @@ void ARGameMode::PlayerUnready()
 	UpdateReadyPlayerCount();
 }
 
+void ARGameMode::RespawnPlayer(APlayerController* PC)
+{
+	if (PC && PC->GetPawn() == nullptr)
+	{
+		RestartPlayer(PC);
+		UE_LOG(LogTemp, Warning, TEXT("Restarting Player"));
+	}
+}
+
 void ARGameMode::UpdateReadyPlayerCount()
 {
 	ARGameState* MyGameState = Cast<ARGameState>(GameState);

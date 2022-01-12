@@ -96,7 +96,15 @@ protected:
 	void OnHealthChanged(URHealthComponent* OwningHealthComponent, float Health, float Damage, const class UDamageType* DamageType,
 		class AController* InstigatedBy, AActor* DamageCauser);
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnDeath();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated, Category = "Properties")
 	bool bIsDead;
+
+	/** The lifespan of the character pawn after death */
+	UPROPERTY(EditDefaultsOnly, Category = "Properties")
+	float DeathLifespan;
 
 public:
 	/** Returns Mesh1P subobject **/

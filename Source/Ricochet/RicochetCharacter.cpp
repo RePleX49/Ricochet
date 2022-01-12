@@ -2,6 +2,8 @@
 
 #include "RicochetCharacter.h"
 #include "RicochetProjectile.h"
+#include "Ricochet/Public/RPlayerController.h"
+#include "Ricochet/Public/RGameMode.h"
 #include "Ricochet/Public/RProjectile.h"
 #include "Ricochet/Public/RHealthComponent.h"
 #include "Animation/AnimInstance.h"
@@ -64,6 +66,7 @@ ARicochetCharacter::ARicochetCharacter()
 	HealthComponent = CreateDefaultSubobject<URHealthComponent>(TEXT("HealthComponent"));
 
 	bIsDead = false;
+	DeathLifespan = 5.0f;
 }
 
 void ARicochetCharacter::BeginPlay()
@@ -86,10 +89,19 @@ void ARicochetCharacter::OnHealthChanged(URHealthComponent* OwningHealthComponen
 		// TODO kill and respawn player
 		GetMovementComponent()->StopMovementImmediately();
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		DetachFromControllerPendingDestroy();
 
-		// destroy character after 5 seconds
-		SetLifeSpan(5.0f);
+		OnDeath();
+
+		ARPlayerController* PC = Cast<ARPlayerController>(GetController());
+		
+		if (PC)
+		{
+			PC->StartRespawnTimer();
+		}
+
+		DetachFromControllerPendingDestroy();			
+
+		SetLifeSpan(DeathLifespan);
 	}
 }
 
@@ -176,44 +188,6 @@ bool ARicochetCharacter::ServerOnFire_Validate()
 	return true;
 }
 
-//Commenting this section out to be consistent with FPS BP template.
-//This allows the user to turn without using the right virtual joystick
-
-//void ARicochetCharacter::TouchUpdate(const ETouchIndex::Type FingerIndex, const FVector Location)
-//{
-//	if ((TouchItem.bIsPressed == true) && (TouchItem.FingerIndex == FingerIndex))
-//	{
-//		if (TouchItem.bIsPressed)
-//		{
-//			if (GetWorld() != nullptr)
-//			{
-//				UGameViewportClient* ViewportClient = GetWorld()->GetGameViewport();
-//				if (ViewportClient != nullptr)
-//				{
-//					FVector MoveDelta = Location - TouchItem.Location;
-//					FVector2D ScreenSize;
-//					ViewportClient->GetViewportSize(ScreenSize);
-//					FVector2D ScaledDelta = FVector2D(MoveDelta.X, MoveDelta.Y) / ScreenSize;
-//					if (FMath::Abs(ScaledDelta.X) >= 4.0 / ScreenSize.X)
-//					{
-//						TouchItem.bMoved = true;
-//						float Value = ScaledDelta.X * BaseTurnRate;
-//						AddControllerYawInput(Value);
-//					}
-//					if (FMath::Abs(ScaledDelta.Y) >= 4.0 / ScreenSize.Y)
-//					{
-//						TouchItem.bMoved = true;
-//						float Value = ScaledDelta.Y * BaseTurnRate;
-//						AddControllerPitchInput(Value);
-//					}
-//					TouchItem.Location = Location;
-//				}
-//				TouchItem.Location = Location;
-//			}
-//		}
-//	}
-//}
-
 void ARicochetCharacter::MoveForward(float Value)
 {
 	if (Value != 0.0f)
@@ -242,4 +216,11 @@ void ARicochetCharacter::LookUpAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
+}
+
+void ARicochetCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ARicochetCharacter, bIsDead);
 }

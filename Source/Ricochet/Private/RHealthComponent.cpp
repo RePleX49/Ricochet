@@ -54,6 +54,8 @@ void URHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, 
 
 	bIsDead = Health <= 0;
 
+	OnHealthChanged.Broadcast(this, Health, Damage, DamageType, InstigatedBy, DamageCauser);
+
 	// TODO is player is dead tell Server to respawn them
 }
 
