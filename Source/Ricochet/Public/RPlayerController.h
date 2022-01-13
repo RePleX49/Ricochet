@@ -16,6 +16,7 @@ class RICOCHET_API ARPlayerController : public APlayerController
 
 public:
 
+	UFUNCTION(Client, Unreliable)
 	void StartRespawnTimer();
 
 protected:

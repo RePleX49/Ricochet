@@ -42,7 +42,6 @@ void URHealthComponent::OnRep_Health(float OldHealth)
 void URHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, 
 	class AController* InstigatedBy, AActor* DamageCauser)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Took Damage"));
 	if (Damage <= 0.0f || bIsDead)
 	{
 		return;
@@ -51,7 +50,6 @@ void URHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, 
 	// TODO check friendly fire
 
 	Health = FMath::Clamp(Health - Damage, 0.0f, MaxHealth);
-
 	bIsDead = Health <= 0;
 
 	OnHealthChanged.Broadcast(this, Health, Damage, DamageType, InstigatedBy, DamageCauser);
